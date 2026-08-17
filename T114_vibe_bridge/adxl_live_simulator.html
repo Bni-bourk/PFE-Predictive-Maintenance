@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADXL355 Live Vibration Monitor</title>
+<style>
+  :root{
+    --bg:#0E1621; --panel:#16212E; --panel2:#1B2836; --grid:#22303F;
+    --ink:#E6EDF3; --muted:#8195A6; --faint:#4A5A6B;
+    --x:#4CC2FF; --y:#FFB454; --z:#9BE564;
+    --calm:#2FBFA0; --watch:#8CCB4B; --warn:#F0A23B; --crit:#FF5C6C;
+    --radius:10px;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg); color:var(--ink); font-family:var(--sans); height:100vh; overflow:hidden}
+  .app{display:flex; flex-direction:column; height:100vh; padding:14px; gap:12px}
+
+  header.top{display:flex; align-items:center; justify-content:space-between}
+  .brand{display:flex; align-items:baseline; gap:10px}
+  .brand h1{font-size:15px; font-weight:600; letter-spacing:.02em; margin:0}
+  .brand .sub{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.14em}
+  .status{display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12px; color:var(--muted)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--calm);box-shadow:0 0 8px var(--calm)}
+  .dot.paused{background:var(--muted);box-shadow:none}
+
+  .controls{display:flex; align-items:flex-start; gap:18px; flex-wrap:wrap;
+    background:var(--panel); border:1px solid var(--grid); border-radius:var(--radius); padding:12px 16px}
+  .eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:7px}
+  .seg{display:inline-flex; background:var(--panel2); border:1px solid var(--grid); border-radius:8px; padding:3px}
+  .seg button{font:inherit; font-size:12.5px; color:var(--muted); background:none; border:none; cursor:pointer;
+    padding:6px 12px; border-radius:6px; transition:background .15s,color .15s}
+  .seg button:hover{color:var(--ink)}
+  .seg button.on{background:var(--bg); color:var(--ink); box-shadow:inset 0 0 0 1px var(--grid)}
+  .grow{flex:1; min-width:280px}
+  .sev-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:7px}
+  .sev-val{font-family:var(--mono); font-size:13px}
+  .pill{font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; letter-spacing:.02em}
+  .row{display:flex;align-items:center;gap:10px}
+  .field{display:flex;flex-direction:column}
+  input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:6px;outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--ink);border:2px solid var(--bg);box-shadow:0 0 0 1px var(--faint)}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--ink);border:2px solid var(--bg)}
+  input[type=range].sev{flex:1;background:linear-gradient(90deg,var(--calm),var(--watch) 35%,var(--warn) 65%,var(--crit))}
+  input[type=range].plain{background:var(--panel2)}
+  input[type=range]:focus-visible{box-shadow:0 0 0 2px var(--x)}
+  input[type=number]{font-family:var(--mono);font-size:12px;color:var(--ink);background:var(--panel2);
+    border:1px solid var(--grid);border-radius:6px;padding:5px 7px;width:72px}
+  input[type=number]:focus-visible{outline:none;box-shadow:0 0 0 2px var(--x)}
+  select,.btn{font:inherit;font-size:12.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--grid);border-radius:8px;padding:7px 11px;cursor:pointer}
+  .btn:hover{border-color:var(--faint)}
+  .btn:focus-visible,select:focus-visible{outline:none;box-shadow:0 0 0 2px var(--x)}
+  .chips{display:inline-flex;gap:4px}
+  .chips button{font:inherit;font-size:11px;color:var(--muted);background:var(--panel2);border:1px solid var(--grid);border-radius:6px;padding:6px 8px;cursor:pointer}
+  .chips button:hover{color:var(--ink)}
+  .chips button.on{color:var(--ink);border-color:var(--faint)}
+
+  .timeline{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:11px}
+  .timeline .eyebrow{margin:0}
+  .timeline input{flex:1}
+  .timeline.disabled{opacity:.4}
+
+  main{flex:1; display:grid; grid-template-columns:1.7fr 1fr; gap:12px; min-height:0}
+  .scopes{display:grid; grid-template-rows:1fr 1fr 1fr; gap:12px; min-height:0}
+  .panel{background:var(--panel); border:1px solid var(--grid); border-radius:var(--radius); position:relative; min-height:0; overflow:hidden}
+  .panel .cap{position:absolute; top:8px; left:12px; right:12px; display:flex; align-items:center; justify-content:space-between; z-index:2}
+  .panel .cap .tag{font-family:var(--mono); font-size:15px; font-weight:700; padding:2px 9px; border-radius:6px; letter-spacing:.03em}
+  .tag.dotx{background:rgba(76,194,255,.16)}
+  .tag.doty{background:rgba(255,180,84,.16)}
+  .tag.dotz{background:rgba(155,229,100,.16)}
+  .scopes .panel:nth-child(1){border-left:3px solid var(--x)}
+  .scopes .panel:nth-child(2){border-left:3px solid var(--y)}
+  .scopes .panel:nth-child(3){border-left:3px solid var(--z)}
+  .scalectrl{display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:10.5px; color:var(--muted)}
+  .scalectrl input[type=number]{width:62px; padding:3px 5px; font-size:10.5px}
+  .autob{font:inherit; font-size:10px; color:var(--muted); background:var(--panel2); border:1px solid var(--grid); border-radius:5px; padding:3px 7px; cursor:pointer}
+  .autob.on{color:var(--calm); border-color:var(--calm)}
+  .panel canvas{position:absolute; inset:0; width:100%; height:100%}
+  .side{display:grid; grid-template-rows:1.35fr 1fr; gap:12px; min-height:0}
+  .spec-head{position:absolute;top:9px;left:12px;right:12px;display:flex;align-items:center;justify-content:space-between;z-index:2}
+  .spec-head .eyebrow{margin:0}
+  .mini{display:inline-flex;gap:2px;background:var(--panel2);border-radius:6px;padding:2px}
+  .mini button{font:inherit;font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;padding:3px 8px;border-radius:4px}
+  .mini button.on{background:var(--bg);color:var(--ink)}
+
+  .readouts{padding:14px 16px; display:flex; flex-direction:column; gap:12px}
+  .readouts .eyebrow{margin:0}
+  .rgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px 16px}
+  .metric{display:flex; flex-direction:column; gap:3px}
+  .metric .k{font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--muted)}
+  .metric .v{font-family:var(--mono); font-size:19px}
+  .metric .v small{font-size:11px; color:var(--muted)}
+  .cond-row{margin-top:auto; display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--grid); padding-top:12px}
+  .cond-row .k{font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--muted)}
+  .dotx{color:var(--x)} .doty{color:var(--y)} .dotz{color:var(--z)}
+  .hint{font-size:10px;color:var(--faint);margin-top:2px}
+
+  @media (max-width:900px){ main{grid-template-columns:1fr; grid-template-rows:1.4fr 1fr} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><h1>ADXL355 · Live Vibration Monitor</h1><span class="sub">3-axis simulation</span></div>
+    <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">LIVE</span><span id="clock">00:00</span></div>
+  </header>
+
+  <section class="controls">
+    <div class="field">
+      <div class="eyebrow">Fault scenario</div>
+      <div class="seg" id="faultSeg">
+        <button data-f="imbalance" class="on">Imbalance</button>
+        <button data-f="misalignment">Misalignment</button>
+        <button data-f="bearing_fault">Bearing</button>
+        <button data-f="looseness">Looseness</button>
+      </div>
+    </div>
+
+    <div class="field grow">
+      <div class="sev-head">
+        <span class="eyebrow" style="margin:0">Severity</span>
+        <span class="pill" id="condPill">Healthy</span>
+      </div>
+      <div class="row">
+        <input type="range" class="sev" id="sev" min="0" max="1" step="0.01" value="0">
+        <input type="number" id="sevInp" min="0" max="1" step="0.01" value="0.00" style="width:66px">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="eyebrow">Shaft speed (RPM)</div>
+      <div class="row">
+        <input type="range" class="plain" id="rpm" min="0" max="6000" step="10" value="1800" style="width:120px">
+        <input type="number" id="rpmInp" min="0" max="12000" step="10" value="1800" style="width:82px">
+      </div>
+      <div class="row" style="margin-top:7px">
+        <div class="chips" id="rpmChips">
+          <button data-v="0">0</button><button data-v="900">900</button>
+          <button data-v="1500">1500</button><button data-v="1800" class="on">1800</button>
+          <button data-v="3000">3000</button><button data-v="3600">3600</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="eyebrow">View window (s)</div>
+      <div class="row">
+        <input type="range" class="plain" id="winR" min="0.1" max="30" step="0.1" value="2" style="width:120px">
+        <input type="number" id="winInp" min="0.1" max="30" step="0.1" value="2" style="width:74px">
+        <button class="btn" id="pause">Pause</button>
+      </div>
+      <div class="row" style="margin-top:7px">
+        <div class="chips" id="winChips">
+          <button data-v="0.5">0.5</button><button data-v="1">1</button>
+          <button data-v="2" class="on">2</button><button data-v="5">5</button>
+          <button data-v="10">10</button><button data-v="30">30</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="controls" style="padding:10px 16px">
+    <div class="field">
+      <div class="eyebrow">Board link · sensor source (Chrome / Edge)</div>
+      <div class="row">
+        <span class="seg" id="srcSeg">
+          <button data-s="sim" class="on">Simulator → board</button>
+          <button data-s="sensor">Real sensor</button>
+        </span>
+        <button class="btn" id="connectBtn">Connect board</button>
+        <span class="hint" id="linkStatus" style="margin:0">Not connected</span>
+        <span class="pill" id="aiPill" style="display:none">AI: —</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="timeline disabled" id="timeline">
+    <span class="eyebrow">Timeline</span>
+    <input type="range" id="scrub" min="0" max="1000" step="1" value="1000" disabled>
+    <span id="scrubLabel" style="font-family:var(--mono);min-width:64px;text-align:right">live</span>
+  </div>
+
+  <main>
+    <div class="scopes">
+      <div class="panel">
+        <div class="cap"><span class="tag dotx">X</span>
+          <span class="scalectrl">&plusmn;<input type="number" id="sxInp" step="0.001" min="0.0005" value="0.050"> g
+            <button class="autob on" id="sxAuto">Auto</button></span></div>
+        <canvas id="sx"></canvas>
+      </div>
+      <div class="panel">
+        <div class="cap"><span class="tag doty">Y</span>
+          <span class="scalectrl">&plusmn;<input type="number" id="syInp" step="0.001" min="0.0005" value="0.050"> g
+            <button class="autob on" id="syAuto">Auto</button></span></div>
+        <canvas id="sy"></canvas>
+      </div>
+      <div class="panel">
+        <div class="cap"><span class="tag dotz">Z</span>
+          <span class="scalectrl">&plusmn;<input type="number" id="szInp" step="0.001" min="0.0005" value="0.050"> g
+            <button class="autob on" id="szAuto">Auto</button></span></div>
+        <canvas id="sz"></canvas>
+      </div>
+    </div>
+    <div class="side">
+      <div class="panel">
+        <div class="spec-head"><span class="eyebrow">Spectrum · frequency fingerprint</span>
+          <span class="mini" id="specAxis"><button data-a="0" class="on">X</button><button data-a="1">Y</button><button data-a="2">Z</button></span></div>
+        <canvas id="spec"></canvas>
+      </div>
+      <div class="readouts">
+        <div class="eyebrow">Live readouts</div>
+        <div class="rgrid">
+          <div class="metric"><span class="k">RMS X</span><span class="v" id="rmsx">0.000 <small>g</small></span></div>
+          <div class="metric"><span class="k">RMS Y</span><span class="v" id="rmsy">0.000 <small>g</small></span></div>
+          <div class="metric"><span class="k">RMS Z</span><span class="v" id="rmsz">0.000 <small>g</small></span></div>
+          <div class="metric"><span class="k">Dominant</span><span class="v" id="dom">— <small>Hz</small></span></div>
+        </div>
+        <div class="cond-row"><span class="k">Condition</span><span class="pill" id="condPill2">Healthy</span></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+"use strict";
+const FS=2000, HISTORY_S=30, N=FS*HISTORY_S, NOISE=0.0012, BPFO=(8/2)*(1-(7/34)), SPEC_SIZE=2048;
+
+let faultType="imbalance", severity=0, rpm=1800, viewSec=2, paused=false;
+// --- board link (Web Serial) ---
+const BOARD_FS=1000, DECIM=Math.max(1,Math.round(FS/BOARD_FS));
+let port=null, writer=null, reader=null, source="sim", decim=0, boardPending="", boardSending=false;
+let phase=0, simTime=0, impacts=[], nextImpact=0;
+const loosePhi=Array.from({length:6},()=>Math.random()*6.283);
+const bx=new Float32Array(N), by=new Float32Array(N), bz=new Float32Array(N);
+let wptr=0, written=0;
+
+let g1=null;
+function randn(){ if(g1!==null){const v=g1;g1=null;return v;}
+  let u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random();
+  const r=Math.sqrt(-2*Math.log(u)); g1=r*Math.sin(2*Math.PI*v); return r*Math.cos(2*Math.PI*v); }
+function push(x,y,z){ bx[wptr]=x; by[wptr]=y; bz[wptr]=z; wptr=(wptr+1)%N; written++; }
+function at(buf,i){ if(i<0||i<written-N||i>=written) return NaN; return buf[((i%N)+N)%N]; }
+function getCss(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+function genSample(){
+  const f_r=rpm/60; simTime+=1/FS;
+  let x=0, y=0, z=0;
+  if(f_r>0){
+    phase+=2*Math.PI*f_r/FS;
+    x=0.004*Math.sin(phase); y=0.004*Math.cos(phase);      // residual baseline
+    const s=severity;
+    if(s>0){
+      if(faultType==="imbalance"){const a=0.12*s; x+=a*Math.sin(phase); y+=a*Math.cos(phase); z+=0.03*a*Math.sin(phase);}
+      else if(faultType==="misalignment"){const a1=0.03*s,a2=0.09*s,az=0.06*s;
+        x+=a1*Math.sin(phase)+a2*Math.sin(2*phase); y+=a1*Math.cos(phase)+a2*Math.cos(2*phase); z+=az*Math.sin(phase)+0.7*az*Math.sin(2*phase);}
+      else if(faultType==="looseness"){const base=0.06*s; let xx=0;
+        for(let k=1;k<=5;k++) xx+=(base/k)*Math.sin(k*phase+loosePhi[k]);
+        xx+=0.5*base*Math.sin(0.5*phase+loosePhi[0]); x+=xx; y+=0.35*xx; z+=0.12*xx;}
+      else if(faultType==="bearing_fault"){const f_def=BPFO*f_r;
+        while(nextImpact<=simTime){impacts.push({t0:nextImpact,amp:0.18*s*(1+randn()*0.15)}); nextImpact+=(1/f_def)*(1+randn()*0.01);}}
+    }
+  }
+  if(impacts.length){const f_res=0.35*FS, decay=800; let acc=0;
+    for(let i=impacts.length-1;i>=0;i--){const dt=simTime-impacts[i].t0;
+      if(dt<0) continue; if(dt>0.03){impacts.splice(i,1);continue;}
+      acc+=impacts[i].amp*Math.exp(-decay*dt)*Math.sin(2*Math.PI*f_res*dt);}
+    x+=acc; y+=0.8*acc; z+=0.3*acc;}
+  x+=randn()*NOISE; y+=randn()*NOISE; z+=randn()*NOISE; z+=1.0;
+  return [x,y,z];
+}
+
+function fft(re,im){ const n=re.length;
+  for(let i=1,j=0;i<n;i++){let bit=n>>1;for(;j&bit;bit>>=1)j^=bit;j^=bit;
+    if(i<j){let t=re[i];re[i]=re[j];re[j]=t;t=im[i];im[i]=im[j];im[j]=t;}}
+  for(let len=2;len<=n;len<<=1){const ang=-2*Math.PI/len,wr=Math.cos(ang),wi=Math.sin(ang);
+    for(let i=0;i<n;i+=len){let cwr=1,cwi=0;
+      for(let k=0;k<len/2;k++){const ur=re[i+k],ui=im[i+k];
+        const vr=re[i+k+len/2]*cwr-im[i+k+len/2]*cwi, vi=re[i+k+len/2]*cwi+im[i+k+len/2]*cwr;
+        re[i+k]=ur+vr;im[i+k]=ui+vi;re[i+k+len/2]=ur-vr;im[i+k+len/2]=ui-vi;
+        const nwr=cwr*wr-cwi*wi;cwi=cwr*wi+cwi*wr;cwr=nwr;}}}
+}
+
+function condition(s){
+  if(s<0.05) return {label:"Healthy",color:getCss("--calm")};
+  if(s<0.40) return {label:"Watch",color:getCss("--watch")};
+  if(s<0.70) return {label:"Warning",color:getCss("--warn")};
+  return {label:"Critical",color:getCss("--crit")};
+}
+function setCondition(){ const c=condition(severity);
+  for(const id of ["condPill","condPill2"]){const el=document.getElementById(id);
+    el.textContent=c.label; el.style.background=c.color+"22"; el.style.color=c.color;} }
+
+function setupCanvas(cv){const dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;
+  cv.width=w*dpr;cv.height=h*dpr;const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);return {ctx,w,h};}
+
+const scopeColors=[getCss("--x"),getCss("--y"),getCss("--z")];
+const scopeCanvas=[document.getElementById("sx"),document.getElementById("sy"),document.getElementById("sz")];
+const scaleInput=[document.getElementById("sxInp"),document.getElementById("syInp"),document.getElementById("szInp")];
+const autoBtn=[document.getElementById("sxAuto"),document.getElementById("syAuto"),document.getElementById("szAuto")];
+const autoScale=[true,true,true], manualScale=[0.05,0.05,0.05], smoothScale=[0.02,0.02,0.02];
+
+function viewEndLogical(){ if(paused){const frac=(+document.getElementById("scrub").value)/1000;
+    const newest=written-1, oldest=Math.max(0,written-N); return Math.round(oldest+(newest-oldest)*frac);}
+  return written-1; }
+
+function drawScope(idx){
+  const cv=scopeCanvas[idx]; const {ctx,w,h}=setupCanvas(cv); ctx.clearRect(0,0,w,h);
+  const PADL=46, PADR=10, PADT=38, PADB=16;
+  const plotW=w-PADL-PADR, plotH=h-PADT-PADB, midY=PADT+plotH/2;
+  const buf=[bx,by,bz][idx];
+  const winSamples=Math.floor(viewSec*FS), endL=viewEndLogical(), startL=endL-winSamples+1;
+  let sum=0,cnt=0; for(let i=startL;i<=endL;i++){const v=at(buf,i);if(!isNaN(v)){sum+=v;cnt++;}}
+  const mean=cnt?sum/cnt:0;
+  let scale;
+  if(autoScale[idx]){ let mx=0; for(let i=startL;i<=endL;i++){const v=at(buf,i);if(!isNaN(v))mx=Math.max(mx,Math.abs(v-mean));}
+    mx=Math.max(mx,0.006); smoothScale[idx]=smoothScale[idx]*0.9+mx*0.1; scale=Math.max(smoothScale[idx],mx);
+    scaleInput[idx].value=scale.toFixed(4);
+  } else { scale=Math.max(parseFloat(manualScale[idx])||0.05,0.0005); }
+  // grid + axis labels
+  ctx.strokeStyle=getCss("--grid"); ctx.lineWidth=1;
+  ctx.fillStyle=getCss("--muted"); ctx.font="10px "+getCss("--mono");
+  for(let g=0;g<=4;g++){const yy=PADT+plotH*g/4; ctx.beginPath();ctx.moveTo(PADL,yy);ctx.lineTo(PADL+plotW,yy);ctx.stroke();}
+  ctx.textAlign="right"; ctx.textBaseline="middle";
+  [[0,scale],[2,0],[4,-scale]].forEach(([g,val])=>{const yy=PADT+plotH*g/4;
+    ctx.fillText((val>0?"+":"")+val.toFixed(3),PADL-6,yy);});
+  for(let k=0;k<=4;k++){const xx=PADL+plotW*k/4; ctx.beginPath();ctx.moveTo(xx,PADT);ctx.lineTo(xx,PADT+plotH);ctx.stroke();}
+  ctx.textAlign="center"; ctx.textBaseline="alphabetic";
+  [0,2,4].forEach(k=>{const xx=PADL+plotW*k/4, tsec=-viewSec*(1-k/4); ctx.fillText(tsec.toFixed(1)+"s",xx,h-4);});
+  // trace (clipped to plot area)
+  ctx.save(); ctx.beginPath(); ctx.rect(PADL,PADT,plotW,plotH); ctx.clip();
+  const amp=(plotH/2)/scale;
+  ctx.strokeStyle=scopeColors[idx]; ctx.lineWidth=1.4; ctx.lineJoin="round"; ctx.beginPath();
+  let started=false;
+  for(let px=0;px<plotW;px++){
+    const s0=startL+Math.floor(px/plotW*winSamples), s1=startL+Math.floor((px+1)/plotW*winSamples);
+    let lo=Infinity,hi=-Infinity;
+    for(let i=s0;i<s1;i++){const v=at(buf,i);if(!isNaN(v)){const d=v-mean;if(d<lo)lo=d;if(d>hi)hi=d;}}
+    if(lo===Infinity) continue;
+    const X=PADL+px, yhi=midY-hi*amp, ylo=midY-lo*amp;
+    if(!started){ctx.moveTo(X,yhi);started=true;} ctx.lineTo(X,yhi); ctx.lineTo(X,ylo);
+  }
+  ctx.stroke(); ctx.restore();
+}
+
+let specAxis=0;
+const specCanvas=document.getElementById("spec");
+function drawSpectrum(){
+  const {ctx,w,h}=setupCanvas(specCanvas); ctx.clearRect(0,0,w,h);
+  const PADL=44,PADT=48,PADB=16, plotW=w-PADL-10, plotH=h-PADT-PADB;
+  ctx.strokeStyle=getCss("--grid"); ctx.lineWidth=1;
+  for(let g=0;g<=3;g++){const yy=PADT+plotH*g/3;ctx.beginPath();ctx.moveTo(PADL,yy);ctx.lineTo(PADL+plotW,yy);ctx.stroke();}
+  const buf=[bx,by,bz][specAxis], endL=viewEndLogical(); if(written<SPEC_SIZE) return;
+  const re=new Float64Array(SPEC_SIZE), im=new Float64Array(SPEC_SIZE); let sum=0;
+  for(let i=0;i<SPEC_SIZE;i++){const v=at(buf,endL-SPEC_SIZE+1+i);re[i]=isNaN(v)?0:v;sum+=re[i];}
+  const mean=sum/SPEC_SIZE;
+  for(let i=0;i<SPEC_SIZE;i++) re[i]=(re[i]-mean)*(0.5-0.5*Math.cos(2*Math.PI*i/(SPEC_SIZE-1)));
+  fft(re,im);
+  const half=SPEC_SIZE/2, mag=new Float64Array(half); let mmax=1e-9,peakBin=0;
+  for(let i=0;i<half;i++){mag[i]=Math.hypot(re[i],im[i]); if(i>3&&mag[i]>mmax){mmax=mag[i];peakBin=i;}}
+  const f_r=rpm/60, nyq=FS/2;
+  // frequency axis labels
+  ctx.fillStyle=getCss("--muted"); ctx.font="10px "+getCss("--mono"); ctx.textAlign="center"; ctx.textBaseline="alphabetic";
+  [0,0.25,0.5,0.75,1].forEach(fr=>{const xx=PADL+plotW*fr; ctx.fillText(Math.round(fr*nyq)+"",xx,h-4);});
+  // 1x,2x,3x markers
+  ctx.strokeStyle=getCss("--faint"); ctx.setLineDash([3,4]); ctx.lineWidth=1;
+  let lastLx=-999;
+  for(let k=1;k<=3;k++){const fx=PADL+(k*f_r/nyq)*plotW; if(fx<PADL+plotW){
+    ctx.beginPath();ctx.moveTo(fx,PADT);ctx.lineTo(fx,PADT+plotH);ctx.stroke();
+    if(fx-lastLx>=18){ctx.fillText(k+"x",fx,PADT-8); lastLx=fx;}}}
+  ctx.setLineDash([]);
+  // bars
+  ctx.fillStyle=scopeColors[specAxis];
+  for(let px=0;px<plotW;px++){const b0=Math.floor(px/plotW*half),b1=Math.max(b0+1,Math.floor((px+1)/plotW*half));
+    let m=0; for(let i=b0;i<b1;i++) m=Math.max(m,mag[i]); const bh=(m/mmax)*plotH; ctx.fillRect(PADL+px,PADT+plotH-bh,1,bh);}
+  const domHz=peakBin*FS/SPEC_SIZE;
+  document.getElementById("dom").innerHTML=domHz.toFixed(0)+" <small>Hz"+(f_r>0?" · "+(domHz/f_r).toFixed(1)+"x":"")+"</small>";
+}
+
+function updateReadouts(){
+  const endL=viewEndLogical(), win=Math.floor(0.4*FS), startL=endL-win+1;
+  const bufs=[bx,by,bz], ids=["rmsx","rmsy","rmsz"];
+  for(let a=0;a<3;a++){let sum=0,c=0; for(let i=startL;i<=endL;i++){const v=at(bufs[a],i);if(!isNaN(v)){sum+=v;c++;}}
+    const mean=c?sum/c:0; let sq=0; for(let i=startL;i<=endL;i++){const v=at(bufs[a],i);if(!isNaN(v)){const d=v-mean;sq+=d*d;}}
+    document.getElementById(ids[a]).innerHTML=(c?Math.sqrt(sq/c):0).toFixed(4)+" <small>g</small>";}
+}
+
+let last=performance.now(), acc=0, specTick=0;
+function frame(now){
+  let dt=(now-last)/1000; last=now; if(dt>0.05)dt=0.05;
+  if(!paused){ acc+=dt*FS; const n=Math.floor(acc); acc-=n;
+    for(let i=0;i<n;i++){const s=genSample();push(s[0],s[1],s[2]);
+      if(writer && source==="sim"){ if(++decim>=DECIM){ decim=0;
+        boardPending+="D:"+Math.round(s[0]*1000)+","+Math.round(s[1]*1000)+","+Math.round(s[2]*1000)+"\n"; } } }
+    if(writer && boardPending) pumpBoard(); }
+  drawScope(0); drawScope(1); drawScope(2);
+  if((specTick++ %4)===0){ drawSpectrum(); updateReadouts(); }
+  const secs=Math.floor(simTime);
+  document.getElementById("clock").textContent=String(Math.floor(secs/60)).padStart(2,"0")+":"+String(secs%60).padStart(2,"0");
+  requestAnimationFrame(frame);
+}
+
+// ---- scale controls (per trend) ----
+function setManual(idx){ if(autoScale[idx]){autoScale[idx]=false; manualScale[idx]=parseFloat(scaleInput[idx].value)||manualScale[idx];
+  autoBtn[idx].classList.remove("on");} }
+autoBtn.forEach((b,idx)=>b.addEventListener("click",()=>{
+  autoScale[idx]=!autoScale[idx]; b.classList.toggle("on",autoScale[idx]);
+  if(!autoScale[idx]) manualScale[idx]=parseFloat(scaleInput[idx].value)||manualScale[idx]; }));
+scaleInput.forEach((inp,idx)=>inp.addEventListener("input",()=>{ setManual(idx); manualScale[idx]=Math.max(parseFloat(inp.value)||0.05,0.0005); }));
+scopeCanvas.forEach((cv,idx)=>cv.addEventListener("wheel",e=>{ e.preventDefault(); setManual(idx);
+  const f=e.deltaY>0?1.15:1/1.15; manualScale[idx]=Math.min(Math.max(manualScale[idx]*f,0.0005),5);
+  scaleInput[idx].value=manualScale[idx].toFixed(4); },{passive:false}));
+
+// ---- fault / severity / rpm ----
+document.getElementById("faultSeg").addEventListener("click",e=>{const b=e.target.closest("button"); if(!b)return;
+  faultType=b.dataset.f; document.querySelectorAll("#faultSeg button").forEach(x=>x.classList.toggle("on",x===b));
+  setSev(0); impacts=[]; nextImpact=simTime;});
+
+const sevSlider=document.getElementById("sev"), sevInp=document.getElementById("sevInp"), sevPill=document.getElementById("condPill");
+function setSev(v){ v=Math.max(0,Math.min(1,v)); severity=v; sevSlider.value=v; sevInp.value=v.toFixed(2); setCondition(); }
+sevSlider.addEventListener("input",e=>setSev(+e.target.value));
+sevInp.addEventListener("input",e=>setSev(+e.target.value));
+
+const rpmSlider=document.getElementById("rpm"), rpmInp=document.getElementById("rpmInp"), rpmChips=document.getElementById("rpmChips");
+function setRpm(v){ v=Math.max(0,Math.min(12000,Math.round(v))); rpm=v; queueRpm();
+  rpmSlider.value=Math.min(v,6000); rpmInp.value=v;
+  document.querySelectorAll("#rpmChips button").forEach(x=>x.classList.toggle("on",+x.dataset.v===v)); }
+rpmSlider.addEventListener("input",e=>setRpm(+e.target.value));
+rpmInp.addEventListener("input",e=>setRpm(+e.target.value));
+rpmChips.addEventListener("click",e=>{const b=e.target.closest("button"); if(b) setRpm(+b.dataset.v);});
+
+const winR=document.getElementById("winR"), winInp=document.getElementById("winInp"), winChips=document.getElementById("winChips");
+function setWin(v){ v=Math.max(0.1,Math.min(30,Math.round(v*10)/10)); viewSec=v; winR.value=v; winInp.value=v;
+  document.querySelectorAll("#winChips button").forEach(x=>x.classList.toggle("on",+x.dataset.v===v)); }
+winR.addEventListener("input",e=>setWin(+e.target.value));
+winInp.addEventListener("input",e=>setWin(+e.target.value));
+winChips.addEventListener("click",e=>{const b=e.target.closest("button"); if(b) setWin(+b.dataset.v);});
+document.getElementById("specAxis").addEventListener("click",e=>{const b=e.target.closest("button"); if(!b)return;
+  specAxis=+b.dataset.a; document.querySelectorAll("#specAxis button").forEach(x=>x.classList.toggle("on",x===b));});
+
+const pauseBtn=document.getElementById("pause"), tl=document.getElementById("timeline"),
+      scrub=document.getElementById("scrub"), scrubLabel=document.getElementById("scrubLabel"),
+      statusDot=document.getElementById("statusDot"), statusText=document.getElementById("statusText");
+pauseBtn.addEventListener("click",()=>{ paused=!paused; pauseBtn.textContent=paused?"Resume":"Pause";
+  statusText.textContent=paused?"PAUSED":"LIVE"; statusDot.classList.toggle("paused",paused);
+  tl.classList.toggle("disabled",!paused); scrub.disabled=!paused;
+  scrubLabel.textContent=paused?"0.0 s ago":"live"; if(paused) scrub.value=1000; });
+scrub.addEventListener("input",()=>{ const frac=(+scrub.value)/1000, span=Math.min(written,N)/FS;
+  scrubLabel.textContent=((1-frac)*span).toFixed(1)+" s ago"; });
+
+// ---- board link (Web Serial) ----
+const connectBtn=document.getElementById("connectBtn"), linkStatus=document.getElementById("linkStatus"), srcSeg=document.getElementById("srcSeg");
+const enc=new TextEncoder();
+function setLink(t){ linkStatus.textContent=t; }
+async function pumpBoard(){ if(boardSending||!writer||!boardPending) return; boardSending=true;
+  const data=boardPending; boardPending="";
+  try{ await writer.write(enc.encode(data)); }catch(e){ await disconnectBoard(); }
+  boardSending=false; if(boardPending) pumpBoard(); }
+async function sendMode(){ if(!writer) return; try{ await writer.write(enc.encode("MODE:"+(source==="sim"?"SIM":"SENSOR")+"\n")); }catch(e){} }
+let rpmTimer=null;
+async function sendRpm(){ if(!writer) return; try{ await writer.write(enc.encode("RPM:"+rpm+"\n")); }catch(e){} }
+function queueRpm(){ clearTimeout(rpmTimer); rpmTimer=setTimeout(sendRpm,150); }
+async function connectBoard(){
+  if(!("serial" in navigator)){ setLink("Web Serial needs Chrome or Edge (served over localhost)"); return; }
+  try{
+    port=await navigator.serial.requestPort();
+    await port.open({baudRate:115200});
+    writer=port.writable.getWriter();
+    connectBtn.textContent="Disconnect"; setLink("Connected");
+    readLoop(); sendMode(); sendRpm();
+  }catch(e){ setLink("Connection cancelled"); port=null; writer=null; }
+}
+async function disconnectBoard(){
+  try{ if(reader) await reader.cancel(); }catch(e){}
+  try{ if(writer) writer.releaseLock(); }catch(e){}
+  try{ if(port) await port.close(); }catch(e){}
+  port=null; writer=null; reader=null; boardPending="";
+  connectBtn.textContent="Connect board"; setLink("Not connected");
+}
+async function readLoop(){
+  try{ reader=port.readable.getReader(); let buf="";
+    while(true){ const {value,done}=await reader.read(); if(done) break;
+      buf+=new TextDecoder().decode(value);
+      let idx; while((idx=buf.indexOf("\n"))>=0){ const ln=buf.slice(0,idx).trim(); buf=buf.slice(idx+1); if(!ln) continue;
+        if(ln.startsWith("AI:")){ const p=document.getElementById("aiPill"); p.style.display="inline-block"; p.textContent=ln;
+          const healthy=ln.includes("healthy"); const c=healthy?getCss("--calm"):getCss("--crit");
+          p.style.background=c+"22"; p.style.color=c; }
+        else setLink("Board: "+ln); } }
+  }catch(e){}
+  try{ reader.releaseLock(); }catch(e){}
+}
+connectBtn.addEventListener("click",()=>{ if(writer) disconnectBoard(); else connectBoard(); });
+srcSeg.addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return;
+  source=b.dataset.s; document.querySelectorAll("#srcSeg button").forEach(x=>x.classList.toggle("on",x===b)); sendMode(); });
+if(!("serial" in navigator)) setLink("Web Serial needs Chrome or Edge (served over localhost)");
+
+setCondition(); setRpm(1800); requestAnimationFrame(frame);
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+[
+  {
+    "nodeId": "1781104938088",
+    "tag": "vibX",
+    "condition": ">",
+    "value": 240,
+    "level": "warning",
+    "message": "be curfull ",
+    "id": "1781173606036"
+  },
+  {
+    "nodeId": "1781104938088",
+    "tag": "vibX",
+    "condition": ">",
+    "value": 250,
+    "level": "critical",
+    "message": "be dengeros",
+    "id": "1781173628160"
+  }
+]

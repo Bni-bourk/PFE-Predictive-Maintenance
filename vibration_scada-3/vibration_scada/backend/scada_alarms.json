@@ -1,0 +1,462 @@
+[
+  {
+    "id": "1781819229461",
+    "timestamp": "2026-06-18T21:47:09.461Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781819223406",
+    "timestamp": "2026-06-18T21:47:03.406Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781819217375",
+    "timestamp": "2026-06-18T21:46:57.375Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781819211342",
+    "timestamp": "2026-06-18T21:46:51.342Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781819175132",
+    "timestamp": "2026-06-18T21:46:15.132Z",
+    "nodeId": "1781817063526",
+    "nodeName": "M2",
+    "type": "COMM_FAIL_1781817063526",
+    "message": "Communication failure with node M2",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817231181",
+    "timestamp": "2026-06-18T21:13:51.182Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817223138",
+    "timestamp": "2026-06-18T21:13:43.138Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817217095",
+    "timestamp": "2026-06-18T21:13:37.095Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817211045",
+    "timestamp": "2026-06-18T21:13:31.045Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817205012",
+    "timestamp": "2026-06-18T21:13:25.012Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817198981",
+    "timestamp": "2026-06-18T21:13:18.981Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817192943",
+    "timestamp": "2026-06-18T21:13:12.943Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817186915",
+    "timestamp": "2026-06-18T21:13:06.915Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817180864",
+    "timestamp": "2026-06-18T21:13:00.864Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817174820",
+    "timestamp": "2026-06-18T21:12:54.820Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817168778",
+    "timestamp": "2026-06-18T21:12:48.778Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817162741",
+    "timestamp": "2026-06-18T21:12:42.741Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781817156710",
+    "timestamp": "2026-06-18T21:12:36.710Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781602975814",
+    "timestamp": "2026-06-16T09:42:55.814Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781178628330",
+    "timestamp": "2026-06-11T11:50:28.330Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781178285528",
+    "timestamp": "2026-06-11T11:44:45.528Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781178222153",
+    "timestamp": "2026-06-11T11:43:42.153Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781176937014",
+    "timestamp": "2026-06-11T11:22:17.014Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781176684520",
+    "timestamp": "2026-06-11T11:18:04.520Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781176572870",
+    "timestamp": "2026-06-11T11:16:12.870Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781176232591",
+    "timestamp": "2026-06-11T11:10:32.591Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781176199404",
+    "timestamp": "2026-06-11T11:09:59.404Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781176045261",
+    "timestamp": "2026-06-11T11:07:25.261Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781175444988",
+    "timestamp": "2026-06-11T10:57:24.988Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781175227775",
+    "timestamp": "2026-06-11T10:53:47.775Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781174908082",
+    "timestamp": "2026-06-11T10:48:28.082Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781174880940",
+    "timestamp": "2026-06-11T10:48:00.940Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781174877925",
+    "timestamp": "2026-06-11T10:47:57.925Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781174603406",
+    "timestamp": "2026-06-11T10:43:23.406Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781174585306",
+    "timestamp": "2026-06-11T10:43:05.306Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781173745511",
+    "timestamp": "2026-06-11T10:29:05.511Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "COMM_FAIL_1781104938088",
+    "message": "Communication failure with node M1",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781173655875",
+    "timestamp": "2026-06-11T10:27:35.875Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781173637777",
+    "timestamp": "2026-06-11T10:27:17.777Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781173619688",
+    "timestamp": "2026-06-11T10:26:59.688Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173606036",
+    "message": "be curfull ",
+    "level": "warning",
+    "acknowledged": true
+  },
+  {
+    "id": "1781173574382",
+    "timestamp": "2026-06-11T10:26:14.382Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173060116",
+    "message": "VIBX is > 240 (Actual: 242)",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781173106693",
+    "timestamp": "2026-06-11T10:18:26.693Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173060116",
+    "message": "VIBX is > 240 (Actual: 242)",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781173094620",
+    "timestamp": "2026-06-11T10:18:14.620Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173060116",
+    "message": "VIBX is > 240 (Actual: 247)",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781173082551",
+    "timestamp": "2026-06-11T10:18:02.551Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173060116",
+    "message": "VIBX is > 240 (Actual: 246)",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781173076520",
+    "timestamp": "2026-06-11T10:17:56.520Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173060116",
+    "message": "VIBX is > 240 (Actual: 242)",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781173061425",
+    "timestamp": "2026-06-11T10:17:41.425Z",
+    "nodeId": "1781104938088",
+    "nodeName": "M1",
+    "type": "RULE_1781173060116",
+    "message": "VIBX is > 240 (Actual: 241)",
+    "level": "critical",
+    "acknowledged": true
+  },
+  {
+    "id": "1781093451910",
+    "timestamp": "2026-06-10T12:10:51.910Z",
+    "nodeId": "1780912590722",
+    "nodeName": "M1",
+    "type": "RULE_1780931932520",
+    "message": "pompe1-alarme",
+    "level": "critical",
+    "acknowledged": true
+  }
+]

@@ -1,0 +1,146 @@
+<svg width="1700" height="1150" viewBox="0 0 1700 1150" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ax" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+  <style>
+    .t { font-family: Calibri, Arial, sans-serif; }
+    .ttl { font-size: 26px; font-weight: bold; fill: #1F3864; }
+    .sub { font-size: 18px; fill: #555555; }
+    .axl { font-size: 17px; fill: #333333; }
+    .fx { font-size: 18px; font-weight: bold; fill: #333333; }
+    .tiny { font-size: 15px; fill: #5C7185; }
+  </style>
+
+  <rect x="0" y="0" width="1700" height="1150" fill="#FFFFFF"/>
+
+  <!-- ================= PANEL TEMPLATE (each 780x480) ================= -->
+
+  <!-- ===== PANEL 1 : IMBALANCE (top-left) ===== -->
+  <g transform="translate(60,40)">
+    <rect x="0" y="0" width="760" height="480" rx="10" fill="#FFFFFF" stroke="#D4A017" stroke-width="2.5"/>
+    <rect x="0" y="0" width="760" height="52" rx="10" fill="#D4A017"/>
+    <text class="t" x="380" y="34" text-anchor="middle" font-size="23" font-weight="bold" fill="#FFFFFF">Déséquilibre (Imbalance)</text>
+
+    <!-- axes -->
+    <line x1="80" y1="400" x2="700" y2="400" stroke="#333" stroke-width="2" marker-end="url(#ax)"/>
+    <line x1="80" y1="400" x2="80" y2="90" stroke="#333" stroke-width="2" marker-end="url(#ax)"/>
+    <text class="t axl" x="700" y="430" text-anchor="end">Fréquence</text>
+    <text class="t axl" x="60" y="95" text-anchor="end" transform="rotate(-90 60 95)"> </text>
+    <text class="t axl" x="45" y="250" text-anchor="middle" transform="rotate(-90 45 250)">Amplitude</text>
+
+    <!-- baseline noise -->
+    <polyline points="80,398 120,396 160,397 200,395 240,397 280,396 320,397 360,396 400,397 440,396 480,397 520,396 560,397 600,396 640,397 680,396" fill="none" stroke="#BBBBBB" stroke-width="1.5"/>
+
+    <!-- 1x dominant peak -->
+    <line x1="200" y1="398" x2="200" y2="120" stroke="#D4A017" stroke-width="7"/>
+    <!-- small 2x 3x -->
+    <line x1="340" y1="398" x2="340" y2="360" stroke="#888888" stroke-width="5"/>
+    <line x1="480" y1="398" x2="480" y2="375" stroke="#888888" stroke-width="5"/>
+
+    <text class="t fx" x="200" y="425" text-anchor="middle">1×</text>
+    <text class="t fx" x="340" y="425" text-anchor="middle">2×</text>
+    <text class="t fx" x="480" y="425" text-anchor="middle">3×</text>
+
+    <text class="t sub" x="380" y="462" text-anchor="middle">Pic dominant à 1× la fréquence de rotation</text>
+  </g>
+
+  <!-- ===== PANEL 2 : MISALIGNMENT (top-right) ===== -->
+  <g transform="translate(880,40)">
+    <rect x="0" y="0" width="760" height="480" rx="10" fill="#FFFFFF" stroke="#E67E22" stroke-width="2.5"/>
+    <rect x="0" y="0" width="760" height="52" rx="10" fill="#E67E22"/>
+    <text class="t" x="380" y="34" text-anchor="middle" font-size="23" font-weight="bold" fill="#FFFFFF">Désalignement (Misalignment)</text>
+
+    <line x1="80" y1="400" x2="700" y2="400" stroke="#333" stroke-width="2" marker-end="url(#ax)"/>
+    <line x1="80" y1="400" x2="80" y2="90" stroke="#333" stroke-width="2" marker-end="url(#ax)"/>
+    <text class="t axl" x="700" y="430" text-anchor="end">Fréquence</text>
+    <text class="t axl" x="45" y="250" text-anchor="middle" transform="rotate(-90 45 250)">Amplitude</text>
+
+    <polyline points="80,398 120,396 160,397 200,395 240,397 280,396 320,397 360,396 400,397 440,396 480,397 520,396 560,397 600,396 640,397 680,396" fill="none" stroke="#BBBBBB" stroke-width="1.5"/>
+
+    <!-- 1x medium, 2x dominant -->
+    <line x1="200" y1="398" x2="200" y2="280" stroke="#888888" stroke-width="6"/>
+    <line x1="340" y1="398" x2="340" y2="120" stroke="#E67E22" stroke-width="7"/>
+    <line x1="480" y1="398" x2="480" y2="365" stroke="#888888" stroke-width="5"/>
+
+    <text class="t fx" x="200" y="425" text-anchor="middle">1×</text>
+    <text class="t fx" x="340" y="425" text-anchor="middle">2×</text>
+    <text class="t fx" x="480" y="425" text-anchor="middle">3×</text>
+
+    <text class="t sub" x="380" y="462" text-anchor="middle">Composante dominante à 2× la fréquence de rotation</text>
+  </g>
+
+  <!-- ===== PANEL 3 : LOOSENESS (bottom-left) ===== -->
+  <g transform="translate(60,570)">
+    <rect x="0" y="0" width="760" height="480" rx="10" fill="#FFFFFF" stroke="#7D3C98" stroke-width="2.5"/>
+    <rect x="0" y="0" width="760" height="52" rx="10" fill="#7D3C98"/>
+    <text class="t" x="380" y="34" text-anchor="middle" font-size="23" font-weight="bold" fill="#FFFFFF">Jeu mécanique (Looseness)</text>
+
+    <line x1="80" y1="400" x2="700" y2="400" stroke="#333" stroke-width="2" marker-end="url(#ax)"/>
+    <line x1="80" y1="400" x2="80" y2="90" stroke="#333" stroke-width="2" marker-end="url(#ax)"/>
+    <text class="t axl" x="700" y="430" text-anchor="end">Fréquence</text>
+    <text class="t axl" x="45" y="250" text-anchor="middle" transform="rotate(-90 45 250)">Amplitude</text>
+
+    <polyline points="80,398 120,396 160,397 200,395 240,397 280,396 320,397 360,396 400,397 440,396 480,397 520,396 560,397 600,396 640,397 680,396" fill="none" stroke="#BBBBBB" stroke-width="1.5"/>
+
+    <!-- harmonics series with strong 3x -->
+    <line x1="170" y1="398" x2="170" y2="230" stroke="#888888" stroke-width="6"/>
+    <line x1="280" y1="398" x2="280" y2="250" stroke="#888888" stroke-width="6"/>
+    <line x1="390" y1="398" x2="390" y2="140" stroke="#7D3C98" stroke-width="7"/>
+    <line x1="500" y1="398" x2="500" y2="290" stroke="#888888" stroke-width="5"/>
+    <line x1="610" y1="398" x2="610" y2="330" stroke="#888888" stroke-width="5"/>
+
+    <text class="t fx" x="170" y="425" text-anchor="middle">1×</text>
+    <text class="t fx" x="280" y="425" text-anchor="middle">2×</text>
+    <text class="t fx" x="390" y="425" text-anchor="middle">3×</text>
+    <text class="t fx" x="500" y="425" text-anchor="middle">4×</text>
+    <text class="t fx" x="610" y="425" text-anchor="middle">5×</text>
+
+    <text class="t sub" x="380" y="462" text-anchor="middle">Série d'harmoniques multiples, énergie marquée autour de 3×</text>
+  </g>
+
+  <!-- ===== PANEL 4 : BEARING FAULT (bottom-right) ===== -->
+  <g transform="translate(880,570)">
+    <rect x="0" y="0" width="760" height="480" rx="10" fill="#FFFFFF" stroke="#C0392B" stroke-width="2.5"/>
+    <rect x="0" y="0" width="760" height="52" rx="10" fill="#C0392B"/>
+    <text class="t" x="380" y="34" text-anchor="middle" font-size="23" font-weight="bold" fill="#FFFFFF">Défaut de roulement (Bearing Fault)</text>
+
+    <line x1="80" y1="400" x2="700" y2="400" stroke="#333" stroke-width="2" marker-end="url(#ax)"/>
+    <line x1="80" y1="400" x2="80" y2="90" stroke="#333" stroke-width="2" marker-end="url(#ax)"/>
+    <text class="t axl" x="700" y="430" text-anchor="end">Fréquence</text>
+    <text class="t axl" x="45" y="250" text-anchor="middle" transform="rotate(-90 45 250)">Amplitude</text>
+
+    <polyline points="80,398 120,396 160,397 200,395 240,397 280,396 320,397" fill="none" stroke="#BBBBBB" stroke-width="1.5"/>
+
+    <!-- small low freq peaks -->
+    <line x1="150" y1="398" x2="150" y2="370" stroke="#888888" stroke-width="5"/>
+    <line x1="230" y1="398" x2="230" y2="378" stroke="#888888" stroke-width="5"/>
+
+    <!-- broadband HF hump -->
+    <path d="M 380,398
+             C 420,390 440,330 470,300
+             C 500,270 520,200 550,185
+             C 580,170 600,190 620,230
+             C 640,270 660,350 680,390
+             L 680,398 Z"
+          fill="#C0392B" fill-opacity="0.30" stroke="#C0392B" stroke-width="3"/>
+    <!-- HF spikes inside hump -->
+    <line x1="470" y1="398" x2="470" y2="290" stroke="#C0392B" stroke-width="4"/>
+    <line x1="520" y1="398" x2="520" y2="230" stroke="#C0392B" stroke-width="4"/>
+    <line x1="555" y1="398" x2="555" y2="195" stroke="#C0392B" stroke-width="4"/>
+    <line x1="595" y1="398" x2="595" y2="240" stroke="#C0392B" stroke-width="4"/>
+    <line x1="635" y1="398" x2="635" y2="310" stroke="#C0392B" stroke-width="4"/>
+
+    <!-- HF band bracket -->
+    <line x1="420" y1="440" x2="690" y2="440" stroke="#C0392B" stroke-width="2"/>
+    <line x1="420" y1="432" x2="420" y2="448" stroke="#C0392B" stroke-width="2"/>
+    <line x1="690" y1="432" x2="690" y2="448" stroke="#C0392B" stroke-width="2"/>
+    <text class="t fx" x="555" y="466" text-anchor="middle" fill="#C0392B">Bande haute fréquence (150 – 500 Hz)</text>
+
+    <text class="t fx" x="150" y="425" text-anchor="middle">1×</text>
+    <text class="t fx" x="230" y="425" text-anchor="middle">2×</text>
+  </g>
+
+  <text class="t tiny" x="850" y="1105" text-anchor="middle">Spectres vibratoires typiques (amplitude en fonction de la fréquence, exprimée en multiples de la fréquence de rotation f_r) — ces signatures fondent le choix des bandes d'énergie extraites par le nœud capteur</text>
+</svg>

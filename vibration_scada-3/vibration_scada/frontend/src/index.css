@@ -1,0 +1,8 @@
+/* 
+  index.css 
+  Cleaned to resolve layout conflicts with App.css.
+  The global application styles and #root layout are managed directly in src/App.css.
+*/
+body {
+  margin: 0;
+}

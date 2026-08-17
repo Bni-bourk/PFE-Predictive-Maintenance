@@ -1,0 +1,38 @@
+[
+  {
+    "name": "GATE",
+    "ip": "192.168.4.1",
+    "port": 502,
+    "id": "1781104759940",
+    "nodes": [
+      {
+        "id": "1781104938088",
+        "name": "M1",
+        "statusReg": 0,
+        "vibXReg": 1,
+        "vibYReg": 2,
+        "vibZReg": 3,
+        "rssiReg": 4,
+        "historian": true,
+        "archiving": {
+          "status": false,
+          "vibX": true,
+          "vibY": true,
+          "vibZ": true,
+          "rssi": false
+        },
+        "unitId": 1
+      },
+      {
+        "id": "1781817063526",
+        "name": "M2",
+        "unitId": 1,
+        "statusReg": 10,
+        "vibXReg": 11,
+        "vibYReg": 12,
+        "vibZReg": 13,
+        "rssiReg": 14
+      }
+    ]
+  }
+]

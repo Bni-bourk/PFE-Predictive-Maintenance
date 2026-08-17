@@ -1,0 +1,14 @@
+{
+  "name": "vibration-scada",
+  "version": "1.0.0",
+  "description": "Vibration SCADA root workspace control",
+  "private": true,
+  "scripts": {
+    "install-all": "npm install --prefix backend && npm install --prefix frontend",
+    "dev": "concurrently --kill-others \"npm start --prefix backend\" \"npm run dev --prefix frontend\"",
+    "start": "npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
