@@ -156,6 +156,7 @@ npm run dev
 
 Developed by **Ayoub Bni-Bourk**  
 *Automation & Instrumentation Specialist*  
+- **Repository**: [PFE-Predictive-Maintenance](https://github.com/Bni-bourk/PFE-Predictive-Maintenance)  
 - **LinkedIn**: [Ayoub Bni-Bourk](https://www.linkedin.com/in/ayoub-bni-bourk-136444172/)  
 - **GitHub**: [@Bni-bourk](https://github.com/Bni-bourk)  
 - **Email**: ayoubbnibourk728@gmail.com
